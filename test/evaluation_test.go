@@ -1,14 +1,14 @@
-package test 
+package test
 
-import(
+import (
 	"fmt"
-	"testing"
 	"github.com/begopher/property"
+	"testing"
 )
 
-func Test_func_Evaluation_panic_when_rule_is_nil(t *testing.T){
-	anyProperty := delegate[string]{t:t}	
-	defer func(){
+func Test_func_Evaluation_panic_when_rule_is_nil(t *testing.T) {
+	anyProperty := delegate[string]{t: t}
+	defer func() {
 		got := recover()
 		if got == nil {
 			t.Fatal("passing nil to argument 'rule' must cause panic")
@@ -21,9 +21,9 @@ func Test_func_Evaluation_panic_when_rule_is_nil(t *testing.T){
 	property.Evaluation[string](nil, anyProperty)
 }
 
-func Test_func_Evaluation_panic_when_property_is_nil(t *testing.T){
+func Test_func_Evaluation_panic_when_property_is_nil(t *testing.T) {
 	anyRule := rule[int]{}
-	defer func(){
+	defer func() {
 		got := recover()
 		if got == nil {
 			t.Fatal("passing nil to argument 'property' must cause panic")
@@ -36,8 +36,8 @@ func Test_func_Evaluation_panic_when_property_is_nil(t *testing.T){
 	property.Evaluation[int](anyRule, nil)
 }
 
-func Test_evaluation_Change_delegate_to_underlying_rule_without_mutation(t *testing.T){
-	table := []string{ "go", "golang" }
+func Test_evaluation_Change_delegate_to_underlying_rule_without_mutation(t *testing.T) {
+	table := []string{"go", "golang"}
 	for _, expected := range table {
 		rule := rule[string]{
 			evaluate: func(got string) error {
@@ -48,15 +48,15 @@ func Test_evaluation_Change_delegate_to_underlying_rule_without_mutation(t *test
 			},
 		}
 		delegation := delegate[string]{
-			change: func(string) error{ return nil },
+			change: func(string) error { return nil },
 		}
 		evaluation := property.Evaluation[string](rule, delegation)
-		evaluation.Change(expected)	
+		evaluation.Change(expected)
 	}
 }
 
-func Test_evaluation_Change_rule_violation_prevents_delegation_to_underlying_property(t *testing.T){
-	table := []string{ "any", "value" }
+func Test_evaluation_Change_rule_violation_prevents_delegation_to_underlying_property(t *testing.T) {
+	table := []string{"any", "value"}
 	for _, data := range table {
 		rule := rule[string]{
 			evaluate: func(string) error {
@@ -74,8 +74,8 @@ func Test_evaluation_Change_rule_violation_prevents_delegation_to_underlying_pro
 	}
 }
 
-func Test_evaluation_Change_delegates_to_underlying_property_without_mutation(t *testing.T){
-	table := []string{ "go", "golang" }
+func Test_evaluation_Change_delegates_to_underlying_property_without_mutation(t *testing.T) {
+	table := []string{"go", "golang"}
 	for _, expected := range table {
 		rule := rule[string]{
 			evaluate: func(string) error {
@@ -95,7 +95,7 @@ func Test_evaluation_Change_delegates_to_underlying_property_without_mutation(t 
 	}
 }
 
-func Test_evaluation_Change_returns_error_from_underlying_property_without_mutation(t *testing.T){
+func Test_evaluation_Change_returns_error_from_underlying_property_without_mutation(t *testing.T) {
 	table := []error{
 		nil,
 		fmt.Errorf("Any custom error"),
@@ -107,7 +107,7 @@ func Test_evaluation_Change_returns_error_from_underlying_property_without_mutat
 			},
 		}
 		delegation := delegate[int]{
-			t:t,
+			t: t,
 			change: func(int) error {
 				return expected
 			},
@@ -121,7 +121,7 @@ func Test_evaluation_Change_returns_error_from_underlying_property_without_mutat
 	}
 }
 
-func Test_evaluation_Value_delegates_to_underlying_property(t *testing.T){
+func Test_evaluation_Value_delegates_to_underlying_property(t *testing.T) {
 	rule := rule[string]{
 		evaluate: func(string) error {
 			return nil
@@ -129,8 +129,8 @@ func Test_evaluation_Value_delegates_to_underlying_property(t *testing.T){
 	}
 	var delegated bool
 	delegation := delegate[string]{
-		t:t,
-		value: func() (string, error){
+		t: t,
+		value: func() (string, error) {
 			delegated = true
 			return "", nil
 		},
@@ -142,10 +142,10 @@ func Test_evaluation_Value_delegates_to_underlying_property(t *testing.T){
 	}
 }
 
-func Test_evaluation_Value_returns_value_without_mutation(t *testing.T){
-	table := []struct{
+func Test_evaluation_Value_returns_value_without_mutation(t *testing.T) {
+	table := []struct {
 		value string
-		err error
+		err   error
 	}{
 		{"Go", nil},
 		{"any", fmt.Errorf("Any error")},
@@ -157,8 +157,8 @@ func Test_evaluation_Value_returns_value_without_mutation(t *testing.T){
 			},
 		}
 		delegation := delegate[string]{
-			t:t,
-			value: func() (string, error){
+			t: t,
+			value: func() (string, error) {
 				return data.value, data.err
 			},
 		}
@@ -171,10 +171,10 @@ func Test_evaluation_Value_returns_value_without_mutation(t *testing.T){
 	}
 }
 
-func Test_evaluation_Value_returns_error_without_mutation(t *testing.T){
-	table := []struct{
+func Test_evaluation_Value_returns_error_without_mutation(t *testing.T) {
+	table := []struct {
 		value string
-		err error
+		err   error
 	}{
 		{"Go", nil},
 		{"any", fmt.Errorf("Any error")},
@@ -186,8 +186,8 @@ func Test_evaluation_Value_returns_error_without_mutation(t *testing.T){
 			},
 		}
 		delegation := delegate[string]{
-			t:t,
-			value: func() (string, error){
+			t: t,
+			value: func() (string, error) {
 				return data.value, data.err
 			},
 		}

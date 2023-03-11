@@ -1,6 +1,6 @@
 package property
 
-func Evaluation[T any] (rule Rule[T], property Property[T]) evaluation[T] {
+func Evaluation[T any](rule Rule[T], property Property[T]) evaluation[T] {
 	if rule == nil {
 		panic("property.Evaluation: cannot be created from nil rule")
 	}
@@ -8,13 +8,13 @@ func Evaluation[T any] (rule Rule[T], property Property[T]) evaluation[T] {
 		panic("property.Evaluation: cannot be created from nil property")
 	}
 	return evaluation[T]{
-		rule: rule,
+		rule:     rule,
 		property: property,
 	}
 }
 
 type evaluation[T any] struct {
-	rule Rule[T]
+	rule     Rule[T]
 	property Property[T]
 }
 
