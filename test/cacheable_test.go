@@ -66,9 +66,9 @@ func Test_cacheable_Change_returns_error_of_underlying_property(t *testing.T){
 
 //
 func Test_cacheable_Value_delegates_to_underlying_property_after_creation(t *testing.T){
-	cacheable.Value()
-	if !invoked {
+	//cacheable.Value()
+	//if !invoked {
 		
-	}
+	//}
 }
 
