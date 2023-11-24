@@ -7,21 +7,21 @@ import(
 	"github.com/begopher/property"
 )
 
-func Test_func_Cacheable_panic_when_property_is_nil(t *testing.T){
+func Test_func_LazyCache_panic_when_property_is_nil(t *testing.T){
 	defer func(){
 		got := recover()
 		if got == nil {
-			t.Fatal("property.Cacheable: should panic when proeprty is nil")
+			t.Fatal("property.LazyCache: should panic when proeprty is nil")
 		}
-		expected := "property.Cacheable: cannot be created from nil property"
+		expected := "property.LazyCache: cannot be created from nil property"
 		if expected != got {
 			t.Errorf("expected message is (%v) got (%v)", expected, got)
 		}
 	}()
-	property.Cacheable[string](nil)
+	property.LazyCache[string](nil)
 }
 
-func Test_cacheable_Change_delegates_to_underlying_property(t *testing.T){
+func Test_lazyCache_Change_delegates_to_underlying_property(t *testing.T){
 	var invoked bool
 	delegation := delegate[string]{
 		t:t,
@@ -30,7 +30,7 @@ func Test_cacheable_Change_delegates_to_underlying_property(t *testing.T){
 			return nil
 		},
 	}
-	cacheable := property.Cacheable[string](delegation)
+	cacheable := property.LazyCache[string](delegation)
 	var any string
 	cacheable.Change(any)
 	if !invoked {
@@ -42,7 +42,7 @@ func Test_cacheable_Change_does_not_mutate_value(t *testing.T){
 	
 }
 
-func Test_cacheable_Change_returns_error_of_underlying_property(t *testing.T){
+func Test_lazyCache_Change_returns_error_of_underlying_property(t *testing.T){
 	table := []error {
 		nil,
 		fmt.Errorf("any error"),
@@ -54,7 +54,7 @@ func Test_cacheable_Change_returns_error_of_underlying_property(t *testing.T){
 				return expected
 			},
 		}
-		cacheable := property.Cacheable[string](delegation)
+		cacheable := property.LazyCache[string](delegation)
 		var any string
 		got := cacheable.Change(any)
 		if got != expected {

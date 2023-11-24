@@ -1,20 +1,20 @@
 package property
 
-func Cacheable[T any](property Property[T]) *cacheable[T] {
+func LazyCache[T any](property Property[T]) *lazyCache[T] {
 	if property == nil {
-		panic("property.Cacheable: cannot be created from nil property")
+		panic("property.LazyCache: cannot be created from nil property")
 	}
-	return &cacheable[T]{
+	return &lazyCache[T]{
 		property: property,
 	}
 }
 
-type cacheable[T any] struct {
+type lazyCache[T any] struct {
 	value    *T
 	property Property[T]
 }
 
-func (c *cacheable[T]) Change(value T) error {
+func (c *lazyCache[T]) Change(value T) error {
 	err := c.property.Change(value)
 	if err == nil {
 		c.value = &value
@@ -22,7 +22,7 @@ func (c *cacheable[T]) Change(value T) error {
 	return err
 }
 
-func (c *cacheable[T]) Value() (T, error) {
+func (c *lazyCache[T]) Value() (T, error) {
 	if c.value != nil {
 		return *c.value, nil
 	}
