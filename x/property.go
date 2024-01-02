@@ -43,7 +43,14 @@ type property[T comparable] struct{
 }
 
 func (p *property[T]) Change(value T) error {
-	if p.cache != nil && *p.cache == value {
+	if p.cache == nil {
+		temp, err := p.Value()
+		if err != nil {
+			return err
+		}
+		*p.cache = temp
+	}
+	if *p.cache == value {
 		return nil
 	}
 	if err := p.cons.Evaluate(value); err != nil {
