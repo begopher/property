@@ -48,7 +48,7 @@ func (p *property[T]) Change(value T) error {
 		if err != nil {
 			return err
 		}
-		*p.cache = temp
+		p.cache = &temp
 	}
 	if *p.cache == value {
 		return nil
@@ -72,7 +72,11 @@ func (p *property[T]) Value() (T, error) {
 	if p.cache != nil {
 		return *p.cache, nil
 	}
-	return p.datasource.Value()
+	temp, err := p.datasource.Value()
+	if err == nil {
+		p.cache =&temp
+	}
+	return temp, err
 }
 
 func (p *property[T]) Constraints(cons rule.Constraint[T]) {
@@ -84,7 +88,7 @@ func (p *property[T]) Constraints(cons rule.Constraint[T]) {
 }
 
 func (p *property[T]) Cache(value T) {
-	*p.cache = value
+	p.cache =&value
 }
 
 func (p *property[T]) Publish(event int, r rule.Rule[T]) bool {
