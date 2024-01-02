@@ -4,6 +4,7 @@ import(
 	"github.com/begopher/rule"
 	"github.com/begopher/rule/constraints"
 	"github.com/begopher/event"
+	"github.com/begopher/event/dispatcher"
 )
 
 type Property[T any] interface{
@@ -19,21 +20,26 @@ type Property[T any] interface{
 
 
 func Simple[T comparable](datasource Datasource[T]) Property[T] {
+	if datasource == nil {
+		panic("property.Simple: datasource cannot be nil")
+	}
 	return &property[T]{
+		datasource: datasource,
 		cons: constraints.New[T](),
 		events: map[int]rule.Rule[T]{},
+		dispatcher: dispatcher.New(),
 	}
 }
 type property[T comparable] struct{
-	cache *T
 	// datasource to store and retrive value from
 	datasource Datasource[T]
-	// dispatcher for sending notifications
-	dispatcher event.Dispatcher
+	// cons for entry validation
+	cons       rule.Constraint[T]
 	// rule for deciding when to publish an event
 	events     map[int]rule.Rule[T]
-	// cons for entry validation
-	cons       rule.Constraint[T] 
+	// dispatcher for sending notifications
+	dispatcher event.Dispatcher
+	cache *T
 }
 
 func (p *property[T]) Change(value T) error {
