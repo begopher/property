@@ -59,7 +59,7 @@ func (p *property[T]) Change(value T) error {
 	if err := p.datasource.Change(value); err != nil {
 		return err
 	}
-	p.cache = &temp
+	p.cache = &value
 	for event, rule := range p.events {
 		if rule.Evaluate(value) {
 			p.dispatcher.Send(event)
